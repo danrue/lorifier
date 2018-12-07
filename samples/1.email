@@ -1,0 +1,154 @@
+Delivered-To: dan.rue@linaro.org
+Received: by 2002:a17:906:d9b:0:0:0:0 with SMTP id m27-v6csp4806145eji;
+        Sat, 1 Dec 2018 01:56:31 -0800 (PST)
+X-Google-Smtp-Source: AFSGD/VCCzBEmYyBA/ZkmGqAyrmoXSu2Qcl8m6qt9xl4L7/PtR+34jTHkWchp/A9ci0H6F9P5V8W
+X-Received: by 2002:a17:902:9692:: with SMTP id n18mr8972523plp.333.1543658191040;
+        Sat, 01 Dec 2018 01:56:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1543658191; cv=none;
+        d=google.com; s=arc-20160816;
+        b=n5CMhMt6rGj7/XXdIHnzBTnYEH4nC4Wb8CJaM05JtLBqbE9u/jawfRnWer8X81zVNo
+         WkY3OZqhYK7Z4rSWZuoiqfZYcvv2d7z8+AuqJMqwAqMiWOy4nh98mj7FL4alELPngY5L
+         72nL+Lk78uD5emsIGpwuRLaUWcBCl0ecCXx3wIidxn2uze90cTn5mKdoDHMf8TPhYyRX
+         fReNVodWsQBTEb3EoWPzPfo0zGeyc9Fcm/WRHC8qoQO+D75FWzjewjiGP9zYYwtGz04S
+         uJSU4vkEULJ1JGnzcSeQ62H1xJYnhHkYTpcVd+N7JhBvZuNe9oJrWLfnbL18tI+YNFPi
+         kbcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=list-id:precedence:sender:user-agent:in-reply-to
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date;
+        bh=5GJlIm+M6uFRrbm5QZYNqfkvXTQkUMFpH8OaHOSKi3A=;
+        b=uokPvSRPy79Dn9U/YP6CNfVxgBSOXrnhRtwoBnJWXtR9Hvr6g0eznmO83pcYO2SX02
+         9J/VLJ+O9Inrwm0nVLHdqA7OFaiGdUSjGY11AwU28jbO+dOiyANDvG3su5H1yLzI7/FZ
+         aGw3syZp1z6F5g2vIOgFBd/80jh7DHqmdmytJUcffM5Biz0twsqQh0uN8+FDJxQEs4gH
+         wuXDzfXSlCOfUwWwPl60xUDAbWJFA46hYUO+3APhzkUDogI0urG4gZ0DlHJZJxHTVcBE
+         Hp09ygWz7rvEoZE1aQN1awAJorMRWqwK5jduPSIantyD/7VJhFTfteaLdkFJ7g9D+UL/
+         iU4A==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: best guess record for domain of linux-kselftest-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) smtp.mailfrom=linux-kselftest-owner@vger.kernel.org
+Return-Path: <linux-kselftest-owner@vger.kernel.org>
+Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
+        by mx.google.com with ESMTP id h33si8200715plh.228.2018.12.01.01.56.30;
+        Sat, 01 Dec 2018 01:56:31 -0800 (PST)
+Received-SPF: pass (google.com: best guess record for domain of linux-kselftest-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) client-ip=209.132.180.67;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: best guess record for domain of linux-kselftest-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) smtp.mailfrom=linux-kselftest-owner@vger.kernel.org
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S1726554AbeLAVIh (ORCPT <rfc822;dan.rue@linaro.org> + 6 others);
+        Sat, 1 Dec 2018 16:08:37 -0500
+Received: from mail.bootlin.com ([62.4.15.54]:49142 "EHLO mail.bootlin.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726342AbeLAVIh (ORCPT <rfc822;linux-kselftest@vger.kernel.org>);
+        Sat, 1 Dec 2018 16:08:37 -0500
+Received: by mail.bootlin.com (Postfix, from userid 110)
+        id 21FC520741; Sat,  1 Dec 2018 10:56:27 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.bootlin.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,SHORTCIRCUIT
+        shortcircuit=ham autolearn=disabled version=3.4.2
+Received: from localhost (den31-3-83-152-168-85.fbx.proxad.net [83.152.168.85])
+        by mail.bootlin.com (Postfix) with ESMTPSA id A2E9320CFB;
+        Sat,  1 Dec 2018 10:55:51 +0100 (CET)
+Date:   Sat, 1 Dec 2018 10:55:51 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Rafael David Tinoco <rafael.tinoco@linaro.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH 1/4] selftests: timers: move PIE tests out of rtctest
+Message-ID: <20181201095551.GN8952@piout.net>
+References: <20180419125030.5076-1-alexandre.belloni@bootlin.com>
+ <20180419125030.5076-2-alexandre.belloni@bootlin.com>
+ <a304b6f1-11db-543b-2cb3-372f34dc7697@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a304b6f1-11db-543b-2cb3-372f34dc7697@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: linux-kselftest-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-kselftest.vger.kernel.org>
+X-Mailing-List: linux-kselftest@vger.kernel.org
+
+Hello,
+
+On 29/11/2018 17:57:05-0200, Rafael David Tinoco wrote:
+> On 4/19/18 9:50 AM, Alexandre Belloni wrote:
+> > Since commit 6610e0893b8bc ("RTC: Rework RTC code to use timerqueue for
+> > events"), PIE are completely handled using hrtimers, without actually using
+> > any underlying hardware RTC.
+> > 
+> > Move PIE testing out of rtctest. It still depends on the presence of an RTC
+> > (to access the device file) but doesn't depend on it actually working.
+> > 
+> > Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > ---
+> >  tools/testing/selftests/timers/.gitignore |   1 +
+> >  tools/testing/selftests/timers/Makefile   |   2 +-
+> >  tools/testing/selftests/timers/rtcpie.c   | 132 ++++++++++++++++++++++
+> >  tools/testing/selftests/timers/rtctest.c  |  83 +-------------
+> >  4 files changed, 138 insertions(+), 80 deletions(-)
+> >  create mode 100644 tools/testing/selftests/timers/rtcpie.c
+> > 
+> ...
+> > +	/* The frequencies 128Hz, 256Hz, ... 8192Hz are only allowed for root. */
+> > +	for (tmp=2; tmp<=64; tmp*=2) {
+> > +
+> > +		retval = ioctl(fd, RTC_IRQP_SET, tmp);
+> > +		if (retval == -1) {
+> > +			/* not all RTCs can change their periodic IRQ rate */
+> > +			if (errno == EINVAL) {
+> > +				fprintf(stderr,
+> > +					"\n...Periodic IRQ rate is fixed\n");
+> > +				goto done;
+> > +			}
+> > +			perror("RTC_IRQP_SET ioctl");
+> > +			exit(errno);
+> > +		}
+> 
+> Hello Alexandre,
+> 
+> In our tests, having failures under 64Hz is quite common in embedded
+> systems with few number of CPUs/Cores:
+> 
+> --------
+> root@bug3402:opt$ find /sys -name rtc0
+> /sys/devices/platform/9010000.pl031/rtc/rtc0
+> /sys/class/rtc/rtc0
+> 
+> selftests: timers: rtcpie
+> Periodic IRQ rate is 1Hz.
+> Counting 20 interrupts at:
+> 2Hz:	 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+> 4Hz:	 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+> 8Hz:	 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+> 16Hz:	 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+> 32Hz:	 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+> 64Hz:	
+> PIE delta error: 0.017697 should be close to 0.015625
+> not ok 1..9 selftests: timers: rtcpie [FAIL]
+> --------
+> 
+> Mainly because 64Hz gives us.. ~16ms in the test, and the variation
+> being taken in consideration for an error, for this test, is 10%, which
+> is ~1.6ms... pretty close to scheduler limit for lower number of CPUs in
+> a functional testing environment.
+> 
+
+I would think that enabling HR timers would actually make things better,
+not matter how many CPUs are in the system. At least, this was the case
+for AT91.
+
+> Would you mind if we change the default for up to 32Hz ? Or, do you have
+> any other suggestion ?
+> 
+
+I must admit that the whole point of moving this test out of rtctest was
+that I didn't want to maintain it. John is the one responsible for the
+timers so he will have to take that decision.
+
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
