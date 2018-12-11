@@ -4,7 +4,7 @@
 #
 # Installation:
 #   In muttrc, set the following:
-#     set display_filter="$HOME/.mutt/display_filter.py"
+#     set display_filter="$HOME/.mutt/lorifier.py"
 #     ignore *
 #     unignore from date subject to cc x-date x-uri User-Agent message-id
 #
