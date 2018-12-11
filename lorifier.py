@@ -22,7 +22,7 @@ import sys
 import email
 import email.policy
 
-from email.utils import mktime_tz, parsedate_tz, formatdate, parsedate_to_datetime
+from email.utils import mktime_tz, parsedate_tz, formatdate
 from collections import OrderedDict
 
 

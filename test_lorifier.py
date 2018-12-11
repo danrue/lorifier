@@ -1,5 +1,6 @@
 import subprocess
 
+
 def test_sample_1():
     ''' Just a typical example email '''
     out = subprocess.run('cat samples/1.email | ./lorifier.py', shell=True, check=True, capture_output=True)
@@ -10,6 +11,7 @@ def test_sample_1():
     ]
     for line in lines:
         assert line in out.stdout.decode('utf-8')
+
 
 def test_sample_2():
     ''' A typical example, with emoji in body '''
@@ -23,6 +25,7 @@ def test_sample_2():
     ]
     for line in lines:
         assert line in out.stdout.decode('utf-8')
+
 
 def test_sample_3():
     ''' UTF-8 headers '''
