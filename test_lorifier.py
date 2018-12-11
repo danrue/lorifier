@@ -1,4 +1,8 @@
+import lorifier
+import os
 import subprocess
+import time
+import urllib
 
 
 def test_sample_1():
@@ -7,7 +11,9 @@ def test_sample_1():
     assert len(out.stderr) == 0
     lines = [
         '\nX-Date: Sat, 01 Dec 2018 03:55:51 -0600\n',
-        '\nX-URI: https://lore.kernel.org/lkml/20181201095551.GN8952@piout.net\n',
+        #'\nX-URI: https://lore.kernel.org/lkml/20181201095551.GN8952@piout.net\n',
+        '\nX-URI: https://lore.kernel.org/linux-rtc/20181201095551.GN8952@piout.net\n',
+
     ]
     for line in lines:
         assert line in out.stdout.decode('utf-8')
@@ -19,7 +25,8 @@ def test_sample_2():
     assert len(out.stderr) == 0
     lines = [
         '\nX-Date: Sat, 01 Dec 2018 03:55:51 -0600\n',
-        '\nX-URI: https://lore.kernel.org/lkml/20181201095551.GN8952@piout.net\n',
+        #'\nX-URI: https://lore.kernel.org/lkml/20181201095551.GN8952@piout.net\n',
+        '\nX-URI: https://lore.kernel.org/linux-rtc/20181201095551.GN8952@piout.net\n',
         '\nHello,\n',
         '\nHere is some emoji! 🍌🍌🚀🚀\n',
     ]
@@ -39,3 +46,41 @@ def test_sample_3():
     ]
     for line in lines:
         assert line in out.stdout.decode('utf-8')
+
+
+def test_get_lorifier_list_fresh(mocker):
+    os.remove('/home/drue/.cache/lorifier.list')
+    with open('samples/lists.txt') as f:
+        lists = f.read()
+    with open('.in', 'w') as f:
+        f.write(lists)
+    mocker.patch('urllib.request.urlretrieve')
+    lore_lists = lorifier.muttemail._get_lorifier_list(cache_file='.in')
+    urllib.request.urlretrieve.assert_not_called()
+    assert len(lore_lists) == 29
+    for line in lists.splitlines():
+        (key, value) = line.split(': ')
+        assert lore_lists[key] == value
+    os.remove('.in')
+
+
+def test_get_lorifier_list_old(mocker):
+    with open('samples/lists.txt') as f:
+        lists = f.read()
+    with open('.in', 'w') as f:
+        f.write(lists)
+    os.utime('.in', (time.time(), time.time()-604800))
+
+    mocker.patch('urllib.request.urlretrieve')
+    lorifier.muttemail._get_lorifier_list(url='https://lore.kernel.org/lists.txt',
+                                          cache_file='.in', cache_ttl=86400)
+    urllib.request.urlretrieve.assert_called_once_with('https://lore.kernel.org/lists.txt', '.in')
+
+    os.remove('.in')
+
+
+def test_get_lorifier_list_first_run(mocker):
+    mocker.patch('urllib.request.urlretrieve')
+    lorifier.muttemail._get_lorifier_list(url='https://lore.kernel.org/lists.txt',
+                                          cache_file='.in')
+    urllib.request.urlretrieve.assert_called_once_with('https://lore.kernel.org/lists.txt', '.in')
