@@ -11,8 +11,7 @@ def test_sample_1():
     assert len(out.stderr) == 0
     lines = [
         '\nX-Date: Sat, 01 Dec 2018 03:55:51 -0600\n',
-        #'\nX-URI: https://lore.kernel.org/lkml/20181201095551.GN8952@piout.net\n',
-        '\nX-URI: https://lore.kernel.org/linux-rtc/20181201095551.GN8952@piout.net\n',
+        '\nX-URI: https://lore.kernel.org/lkml/20181201095551.GN8952@piout.net\n',
 
     ]
     for line in lines:
@@ -25,8 +24,7 @@ def test_sample_2():
     assert len(out.stderr) == 0
     lines = [
         '\nX-Date: Sat, 01 Dec 2018 03:55:51 -0600\n',
-        #'\nX-URI: https://lore.kernel.org/lkml/20181201095551.GN8952@piout.net\n',
-        '\nX-URI: https://lore.kernel.org/linux-rtc/20181201095551.GN8952@piout.net\n',
+        '\nX-URI: https://lore.kernel.org/lkml/20181201095551.GN8952@piout.net\n',
         '\nHello,\n',
         '\nHere is some emoji! 🍌🍌🚀🚀\n',
     ]

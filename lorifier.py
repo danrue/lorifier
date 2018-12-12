@@ -90,6 +90,10 @@ class muttemail:
                     (key, value) = line.strip().split(': ')
                     lore_lists[key] = value
 
+        # Prefer lkml links
+        if 'linux-kernel.vger.kernel.org' in lore_lists:
+            lore_lists.move_to_end('linux-kernel.vger.kernel.org', last=False)
+
         return lore_lists
 
     def create_xuri_header(self):
