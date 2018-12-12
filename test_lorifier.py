@@ -47,13 +47,12 @@ def test_sample_3():
 
 
 def test_get_lorifier_list_fresh(mocker):
-    os.remove('/home/drue/.cache/lorifier.list')
     with open('samples/lists.txt') as f:
         lists = f.read()
     with open('.in', 'w') as f:
         f.write(lists)
     mocker.patch('urllib.request.urlretrieve')
-    lore_lists = lorifier.muttemail._get_lorifier_list(cache_file='.in')
+    lore_lists = lorifier.muttemail._get_lorifier_list(cache_file=os.path.abspath('.in'))
     urllib.request.urlretrieve.assert_not_called()
     assert len(lore_lists) == 29
     for line in lists.splitlines():
@@ -71,8 +70,8 @@ def test_get_lorifier_list_old(mocker):
 
     mocker.patch('urllib.request.urlretrieve')
     lorifier.muttemail._get_lorifier_list(url='https://lore.kernel.org/lists.txt',
-                                          cache_file='.in', cache_ttl=86400)
-    urllib.request.urlretrieve.assert_called_once_with('https://lore.kernel.org/lists.txt', '.in')
+                                          cache_file=os.path.abspath('.in'), cache_ttl=86400)
+    urllib.request.urlretrieve.assert_called_once_with('https://lore.kernel.org/lists.txt', os.path.abspath('.in'))
 
     os.remove('.in')
 
@@ -80,5 +79,5 @@ def test_get_lorifier_list_old(mocker):
 def test_get_lorifier_list_first_run(mocker):
     mocker.patch('urllib.request.urlretrieve')
     lorifier.muttemail._get_lorifier_list(url='https://lore.kernel.org/lists.txt',
-                                          cache_file='.in')
-    urllib.request.urlretrieve.assert_called_once_with('https://lore.kernel.org/lists.txt', '.in')
+                                          cache_file=os.path.abspath('.in'))
+    urllib.request.urlretrieve.assert_called_once_with('https://lore.kernel.org/lists.txt', os.path.abspath('.in'))

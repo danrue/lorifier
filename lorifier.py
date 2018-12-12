@@ -68,6 +68,9 @@ class muttemail:
         list_file = os.path.expanduser(cache_file)
         update = False
 
+        if not os.path.isdir(os.path.expanduser(os.path.dirname(cache_file))):
+            os.mkdir(os.path.expanduser(os.path.dirname(cache_file)))
+
         try:
             st = os.stat(list_file)
             if (time.time() - st.st_mtime) > cache_ttl:
