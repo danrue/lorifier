@@ -12,25 +12,25 @@ This script adds the following headers:
 
 ## Installation
 
-Copy display_filter.py to your filesystem. The rest of the files in this
+Copy lorifier.py to your filesystem. The rest of the files in this
 repository are not necessary.
 
 Make the following modifications to your .muttrc:
 
 ```
-set display_filter="/PATH/TO/display_filter.py"
+set display_filter="/PATH/TO/lorifier.py"
 ignore *
 unignore from date subject to cc x-date x-uri User-Agent message-id
 ```
 
 Note that if Message-ID is not unignored, mutt will not pass it to the
 display_filter and the lore link will not be able to be generated. As a
-consequence of this behavior, display_filter.py will subsequently remove
+consequence of this behavior, lorifier.py will subsequently remove
 Message-ID from the displayed email, so that it will not be displayed.
 
 ## Requirements
 
-display_filter.py requires python 3, and has been tested with 3.7.
+lorifier.py requires python 3, and has been tested with 3.7.
 
 ## Testing
 

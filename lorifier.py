@@ -4,7 +4,7 @@
 #
 # Installation:
 #   In muttrc, set the following:
-#     set display_filter="$HOME/.mutt/display_filter.py"
+#     set display_filter="$HOME/.mutt/lorifier.py"
 #     ignore *
 #     unignore from date subject to cc x-date x-uri User-Agent message-id
 #
@@ -18,11 +18,14 @@
 #   X-URI: Add an X-URI header, which is added when lore-compatible mail is
 #          found
 
-import sys
 import email
 import email.policy
+import os
+import sys
+import time
+import urllib.request
 
-from email.utils import mktime_tz, parsedate_tz, formatdate, parsedate_to_datetime
+from email.utils import mktime_tz, parsedate_tz, formatdate
 from collections import OrderedDict
 
 
@@ -51,6 +54,51 @@ class muttemail:
             if header_name == header.lower():
                 del(self.message._headers[i])
 
+    @staticmethod
+    def _get_lorifier_list(url='https://lore.kernel.org/lists.txt',
+                           cache_file='~/.cache/lorifier.list',
+                           cache_ttl=86400):
+        '''
+        Retrieve Lore's list of supported mailing lists. Fail gracefully.
+
+        Cache the list at cache_file. File update is attempted at most daily.
+        '''
+
+        lore_lists = OrderedDict()
+        list_file = os.path.expanduser(cache_file)
+        update = False
+
+        if not os.path.isdir(os.path.expanduser(os.path.dirname(cache_file))):
+            os.mkdir(os.path.expanduser(os.path.dirname(cache_file)))
+
+        try:
+            st = os.stat(list_file)
+            if (time.time() - st.st_mtime) > cache_ttl:
+                update = True
+        except FileNotFoundError:
+            update = True
+
+        if update:
+            try:
+                urllib.request.urlretrieve(url, list_file)
+            except Exception as e:
+                # In such an event, 'touch' the file so that an update won't
+                # be attempted again until cache_ttl has passed
+                os.utime(list_file, (time.time(), time.time()))
+                sys.stderr.write("Error fetching {}: {}\n".format(url, str(e)))
+
+        if os.path.exists(list_file):
+            with open(list_file) as f:
+                for line in f.readlines():
+                    (key, value) = line.strip().split(': ')
+                    lore_lists[key] = value
+
+        # Prefer lkml links
+        if 'linux-kernel.vger.kernel.org' in lore_lists:
+            lore_lists.move_to_end('linux-kernel.vger.kernel.org', last=False)
+
+        return lore_lists
+
     def create_xuri_header(self):
         '''
         If the mail is sent to a lore-supported mailing list, provide a header
@@ -59,37 +107,15 @@ class muttemail:
         Message-ID header must be present. Be sure it is unignored. This
         function will remove Message-ID.
         '''
-        # In order of preference; first match wins
-        lore_lists = OrderedDict({
-            'linux-kernel@vger.kernel.org': 'https://lore.kernel.org/lkml/',
-            'backports@vger.kernel.org': 'https://lore.kernel.org/backports/',
-            'cocci@systeme.lip6.fr': 'https://lore.kernel.org/cocci/',
-            'kernelnewbies@kernelnewbies.org': 'https://lore.kernel.org/kernelnewbies/',
-            'linux-arm-kernel@lists.infradead.org': 'https://lore.kernel.org/linux-arm-kernel/',
-            'linux-block@vger.kernel.org': 'https://lore.kernel.org/linux-block/',
-            'linux-bluetooth@vger.kernel.org': 'https://lore.kernel.org/linux-bluetooth/',
-            'linux-btrfs@vger.kernel.org': 'https://lore.kernel.org/linux-btrfs/',
-            'linux-clk@vger.kernel.org': 'https://lore.kernel.org/linux-clk/',
-            'linux-integrity@vger.kernel.org': 'https://lore.kernel.org/linux-integrity/',
-            'linux-nfs@vger.kernel.org': 'https://lore.kernel.org/linux-nfs/',
-            'linux-parisc@vger.kernel.org': 'https://lore.kernel.org/linux-parisc/',
-            'linux-pci@vger.kernel.org': 'https://lore.kernel.org/linux-pci/',
-            'linux-riscv@lists.infradead.org': 'https://lore.kernel.org/linux-riscv/',
-            'linux-rtc@vger.kernel.org': 'https://lore.kernel.org/linux-rtc/',
-            'linux-security-module@vger.kernel.org': 'https://lore.kernel.org/linux-security-module/',
-            'linux-sgx@vger.kernel.org': 'https://lore.kernel.org/linux-sgx/',
-            'linux-wireless@vger.kernel.org': 'https://lore.kernel.org/linux-wireless/',
-            'linuxppc-dev@lists.ozlabs.org': 'https://lore.kernel.org/linuxppc-dev/',
-            'selinux@vger.kernel.org': 'https://lore.kernel.org/selinux/',
-            'selinux-refpolicy@vger.kernel.org': 'https://lore.kernel.org/selinux-refpolicy/',
-            'util-linux@vger.kernel.org': 'https://lore.kernel.org/util-linux/',
-            'wireguard@lists.zx2c4.com': 'https://lore.kernel.org/wireguard/',
-        })
+
+        lore_lists = self._get_lorifier_list()
+
         message_id = self.message.get('Message-ID', None)
         if not message_id:
             return
 
         recipients = self.message.get('To', '') + ' ' + self.message.get('Cc', '')
+        recipients = recipients.replace('@', '.')
         for email_list, lore_url in lore_lists.items():
             if email_list in recipients:
                 self.message.add_header('X-URI', str(lore_url+message_id[1:-1]))
