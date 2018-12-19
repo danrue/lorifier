@@ -1,5 +1,7 @@
 # Lorifier
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
 Lorifier is a mutt display filter that is used to add
 [lore](https://www.kernel.org/lore.html) links to compatible emails, when
 they're viewed in mutt. It also adds a localized date header.

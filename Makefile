@@ -1,7 +1,10 @@
-all: flake8 test
+all: black flake8 test
 
-test:
-	pytest
+black:
+	black *.py
 
 flake8:
 	flake8
+
+test:
+	pytest
