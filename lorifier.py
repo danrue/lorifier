@@ -6,7 +6,7 @@
 #   In muttrc, set the following:
 #     set display_filter="$HOME/.mutt/lorifier.py"
 #     ignore *
-#     unignore from date subject to cc x-date x-uri User-Agent message-id
+#     unignore from date subject to cc x-date x-uri message-id
 #
 # Note that it's important that message-id is unignored; only unignored headers
 # are passed to display_filter. If message-id is not passed, x-uri won't be
