@@ -22,7 +22,7 @@ Make the following modifications to your .muttrc:
 ```
 set display_filter="/PATH/TO/lorifier.py"
 ignore *
-unignore from date subject to cc x-date x-uri User-Agent message-id
+unignore from date subject to cc x-date x-uri message-id
 ```
 
 Note that if Message-ID is not unignored, mutt will not pass it to the
