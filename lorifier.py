@@ -105,8 +105,8 @@ class muttemail:
         If the mail is sent to a lore-supported mailing list, provide a header
         with a lore link directly.
 
-        Message-ID header must be present. Be sure it is unignored. This
-        function will remove Message-ID.
+        Message-ID header must be present. Be sure it is unignored. Use
+        remove_header("Message-ID") to avoid displaying Message-ID.
         """
 
         lore_lists = self._get_lorifier_list()
