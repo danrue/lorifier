@@ -1,0 +1,21 @@
+[project]
+name = "lorifier"
+version = "0.1.0"
+description = "Mutt display filter that adds lore.kernel.org links to emails"
+readme = "README.md"
+license = "BSD-2-Clause"
+requires-python = ">=3.7"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "pytest",
+    "pytest-mock",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
