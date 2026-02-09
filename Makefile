@@ -1,10 +1,10 @@
-all: black flake8 test
+all: format lint test
 
-black:
-	black *.py
+format:
+	uv run ruff format *.py
 
-flake8:
-	flake8
+lint:
+	uv run ruff check *.py
 
 test:
-	pytest
+	uv run pytest

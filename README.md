@@ -1,6 +1,6 @@
 # Lorifier
 
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 Lorifier is a mutt display filter that is used to add
 [lore](https://www.kernel.org/lore.html) links to compatible emails, when
@@ -32,8 +32,8 @@ Message-ID from the displayed email, so that it will not be displayed.
 
 ## Requirements
 
-lorifier.py requires python 3, and has been tested with 3.7.
+lorifier.py requires python 3.
 
 ## Testing
 
-Run 'make test' or 'pytest'. Requires pytest.
+Run 'make' or 'uv run pytest'.

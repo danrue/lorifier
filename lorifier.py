@@ -20,13 +20,11 @@
 
 import email
 import email.policy
-import os
 import sys
-import time
 
 from email.utils import mktime_tz, parsedate_tz, formatdate
 
-LORE_MASK = 'https://lore.kernel.org/all/%s'
+LORE_MASK = "https://lore.kernel.org/all/%s"
 
 
 class muttemail:
@@ -37,7 +35,7 @@ class muttemail:
         return self.message.as_string(policy=email.policy.EmailPolicy(utf8=True))
 
     def create_xdate_header(self):
-        """ Add an X-Date header, which is Date converted to localtime. """
+        """Add an X-Date header, which is Date converted to localtime."""
         date = self.message.get("Date", None)
         if not date:
             return
@@ -47,11 +45,11 @@ class muttemail:
         self.message.add_header("X-Date", formatdate(epoch_time, localtime=True))
 
     def remove_header(self, header):
-        """ Remove the named header """
+        """Remove the named header"""
         for i in reversed(range(len(self.message._headers))):
             header_name = self.message._headers[i][0].lower()
             if header_name == header.lower():
-                del (self.message._headers[i])
+                del self.message._headers[i]
 
     def create_xuri_header(self):
         """
